@@ -151,7 +151,13 @@ namespace TestNonCoreWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                //var client = new SharpPwned.NET.HaveIBeenPwnedRestClient();
+                //var client = new Helpers.PwnedRestClient();
+                //var response = client.IsPasswordPwned(model.Password).Result;
+               
+
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -257,6 +263,7 @@ namespace TestNonCoreWebApp.Controllers
             var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
             if (result.Succeeded)
             {
+                await UserManager.SendEmailAsync(user.Id, "Reset Password", "Your password was reset.");
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
             AddErrors(result);
